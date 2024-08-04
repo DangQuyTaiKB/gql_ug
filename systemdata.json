@@ -1,4 +1,280 @@
 {
+    "statemachines": [
+        {
+            "id": "15257c8c-a259-46d3-993f-83d2a8d02b85",
+            "name": "State machine A",
+            "name_en": "State machine A",
+            "type_id": "87541a27-38ff-4bc0-9499-28ad346c51b1",
+            "createdby": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "changedby": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"
+        },
+        {
+            "id": "2eea088a-ee0f-4bbd-b0dc-d86a48f0402d",
+            "name": "State machine B",
+            "name_en": "State machine B",
+            "type_id": "87541a27-38ff-4bc0-9499-28ad346c51b1",
+            "createdby": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "changedby": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"
+        }
+    ],
+    "statemachinetypes": [
+        {
+            "id": "87541a27-38ff-4bc0-9499-28ad346c51b1",
+            "name": "State machine type A",
+            "name_en": "State machine type A",
+            "category_id": "2141f3e3-1dc6-449b-b60b-c8d1c03aeaf6"
+        }
+    ],
+    "statemachinecategories": [
+        {
+            "id": "2141f3e3-1dc6-449b-b60b-c8d1c03aeaf6",
+            "name": "State machine category A",
+            "name_en": "State machine category A"
+        }
+    ],
+    "states": [
+        {
+            "id": "eb085919-640b-43f5-863d-2e69e4a86fe4",
+            "name": "State A",
+            "name_en": "State A",
+            "type_id": "2141f3e3-1dc6-449b-b60b-c8d1c03aeaf6",
+            "statemachine_id": "15257c8c-a259-46d3-993f-83d2a8d02b85"
+        },
+        {
+            "id": "f9632f9a-cb18-4ca3-b71e-0e0c37cf334a",
+            "name": "State B",
+            "name_en": "State B",
+            "type_id": "2141f3e3-1dc6-449b-b60b-c8d1c03aeaf6",
+            "statemachine_id": "15257c8c-a259-46d3-993f-83d2a8d02b85"
+        },
+        {
+            "id": "b44b9aef-d895-4ff5-a3ed-2f41ddc81f3a",
+            "name": "State C",
+            "name_en": "State C",
+            "type_id": "2141f3e3-1dc6-449b-b60b-c8d1c03aeaf6",
+            "statemachine_id": "15257c8c-a259-46d3-993f-83d2a8d02b85"
+        }
+    ],
+    "statetransitions": [
+        {
+            "id": "322cec6a-6c62-4611-8b67-a3b1532a9f17",
+            "name": "approve",
+            "source_id": "eb085919-640b-43f5-863d-2e69e4a86fe4",
+            "target_id": "f9632f9a-cb18-4ca3-b71e-0e0c37cf334a",
+            "statemachine_id": "15257c8c-a259-46d3-993f-83d2a8d02b85"
+        },
+        {
+            "id": "e3d65260-75b1-431f-8872-1d034cd7f0cb",
+            "name": "decline",
+            "source_id": "f9632f9a-cb18-4ca3-b71e-0e0c37cf334a",
+            "target_id": "eb085919-640b-43f5-863d-2e69e4a86fe4",
+            "statemachine_id": "15257c8c-a259-46d3-993f-83d2a8d02b85"
+        }
+    ],
+
+    "entitytypes": [
+        
+        {
+            "name": "univerzita",
+            "name_en": "university",
+            "ex_type": "100",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e152-610c-11ed-9f29-001a7dda7110"
+        },
+        {
+            "name": "fakulta",
+            "name_en": "faculty",
+            "ex_type": "300",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e153-610c-11ed-bf19-001a7dda7110"
+        },
+        {
+            "name": "ústav",
+            "name_en": "institute",
+            "ex_type": "400",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e154-610c-11ed-bdbf-001a7dda7110"
+        },
+        {
+            "name": "centrum",
+            "name_en": "centre",
+            "ex_type": "410",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e155-610c-11ed-bdbf-001a7dda7110"
+        },
+        {
+            "name": "katedra",
+            "name_en": "department",
+            "ex_type": "500",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e155-610c-11ed-844e-001a7dda7110"
+        },
+        {
+            "name": "oddělení",
+            "name_en": "section",
+            "ex_type": "600",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e156-610c-11ed-87ef-001a7dda7110"
+        },
+        {
+            "name": "studijní skupina",
+            "name_en": "study group",
+            "ex_type": "001",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e157-610c-11ed-9312-001a7dda7110"
+        },
+        {
+            "name": "stalý stav",
+            "name_en": "all teachers",
+            "ex_type": "200",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "cd49e157-610c-11ed-9f29-001a7dda7110"
+        },
+        {
+            "name": "studenti",
+            "name_en": "all students",
+            "ex_type": "002",
+            "category_id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e",
+            "id": "0eb35718-615b-11ed-b753-0242ac120003"
+        },
+        {
+            "id": "b1bedec8-931f-11ed-9b95-0242ac110002",
+            "category_id": "45ce1b87-021c-4671-8f9f-f68b76ff0701",
+            "name": "garance programu",
+            "name_en": "program grants"
+        },
+        {
+            "id": "b1bedf72-931f-11ed-9b95-0242ac110002",
+            "category_id": "45ce1b87-021c-4671-8f9f-f68b76ff0701",
+            "name": "garance předmětu",
+            "name_en": "subject grants"
+        },
+        {
+            "name": "správa nemovitosti",
+            "name_en": "facility management",
+            "id": "de8654be-e776-4b6e-bb1e-2d5c949aa1eb",
+            "category_id": "6b99de73-205a-41fc-9847-6f04fddc38f1"
+        },
+
+        {
+            "name": "já",
+            "name_en": "myself",
+            "id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "administrátor",
+            "name_en": "administrator",
+            "id": "ced46aa4-3217-4fc1-b79d-f6be7d21c6b6",
+            "category_id": "774690a0-56b3-45d9-9887-0989ed3de4c0"
+        },
+        {
+            "name": "zpracovatel gdpr",
+            "name_en": "gdpr user",
+            "id": "b87aed46-dfc3-40f8-ad49-03f4138c7478",
+            "category_id": "774690a0-56b3-45d9-9887-0989ed3de4c0"
+        },
+        {
+            "name": "rektor",
+            "name_en": "rector",
+            "id": "ae3f0d74-6159-11ed-b753-0242ac120003",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "prorektor",
+            "name_en": "vicerector",
+            "id": "ae3f2886-6159-11ed-b753-0242ac120003",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "děkan",
+            "name_en": "dean",
+            "id": "ae3f2912-6159-11ed-b753-0242ac120003",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "proděkan",
+            "name_en": "vicedean",
+            "id": "ae3f2980-6159-11ed-b753-0242ac120003",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "vedoucí katedry",
+            "name_en": "head of department",
+            "id": "ae3f29ee-6159-11ed-b753-0242ac120003",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "vedoucí učitel",
+            "name_en": "leading teacher",
+            "id": "ae3f2a5c-6159-11ed-b753-0242ac120003",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "garant",
+            "name_en": "grant",
+            "id": "5f0c247e-931f-11ed-9b95-0242ac110002",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "garant (zástupce)",
+            "name_en": "grant (deputy)",
+            "id": "5f0c2532-931f-11ed-9b95-0242ac110002",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "garant předmětu",
+            "name_en": "subject's grant",
+            "id": "5f0c255a-931f-11ed-9b95-0242ac110002",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "přednášející",
+            "name_en": "lecturer",
+            "id": "5f0c2578-931f-11ed-9b95-0242ac110002",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "cvičící",
+            "name_en": "trainer",
+            "id": "5f0c2596-931f-11ed-9b95-0242ac110002",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        }        
+    ],
+
+    "entitycategories": [
+        {
+            "name": "univerzitní struktury",
+            "name_en": "university structures",
+            "id": "be2b2dcc-4bfe-4035-99e8-dd6d6f01562e"
+        },
+        {
+            "name": "organizační struktury",
+            "name_en": "organization structures",
+            "id": "6b99de73-205a-41fc-9847-6f04fddc38f1"
+        },
+        {
+            "name": "akreditační struktury",
+            "name_en": "acreditation structures",
+            "id": "45ce1b87-021c-4671-8f9f-f68b76ff0701"
+        },
+
+        { 
+            "id": "fd73596b-1043-46f0-837a-baa0734d64df", 
+            "name": "akademické role",
+            "name_en": "academic roles" 
+        },
+        { 
+            "id": "774690a0-56b3-45d9-9887-0989ed3de4c0", 
+            "name": "systémové role" ,
+            "name_en": "system roles" 
+        },
+        { 
+            "id": "e03053d7-59b4-4634-906f-b809f60cc3c7", 
+            "name": "others" 
+        }
+
+    ],
     "externalids": [
         {
             "id": "d5d5286d-50d2-4b07-97de-7407c62c21c0",
@@ -356,7 +632,9 @@
     ],
     "roletypelists": [
         {
-            "id": "84235021-7e50-402e-946e-7f6b455821e4"
+            "id": "84235021-7e50-402e-946e-7f6b455821e4",
+            "list_id": "c5056e8d-736a-4afb-aa7f-9ca626a19916",
+            "type_id": "ced46aa4-3217-4fc1-b79d-f6be7d21c6b6"
         }
     ],
     "roles": [

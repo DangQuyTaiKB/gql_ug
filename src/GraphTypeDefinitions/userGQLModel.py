@@ -52,6 +52,14 @@ class UserGQLModel(BaseGQLModel):
     lastchange = resolve_lastchange
     createdby = resolve_createdby
     
+    firstname = strawberry.field(
+        description="""User's name (like John)""",
+        permission_classes=[
+            OnlyForAuthentized
+        ],
+        resolver=DBResolvers.UserModel.name
+    )  
+
     surname = strawberry.field(
         description="""User's family name (like Obama)""",
         permission_classes=[
@@ -59,6 +67,20 @@ class UserGQLModel(BaseGQLModel):
         ],
         resolver=DBResolvers.UserModel.surname
     )  
+
+    # fullname = strawberry.field(
+    #     description="""User's name (like John Newbie)""",
+    #     permission_classes=[
+    #         OnlyForAuthentized
+    #     ],
+    #     resolver=DBResolvers.UserModel.fullname
+    # )  
+
+    @strawberry.field(
+        description="""User's family name (like Obama)""",
+        permission_classes=[OnlyForAuthentized])
+    def fullname(self) -> Optional[str]:
+        return self.fullname
 
     email = strawberry.field(
         description="""User's email""",
@@ -101,11 +123,6 @@ class UserGQLModel(BaseGQLModel):
         resolver=DBResolvers.UserModel.roles(RoleGQLModel, WhereFilterModel=RoleInputWhereFilter)
     )
 
-    @strawberry.field(
-        description="""User's family name (like Obama)""",
-        permission_classes=[OnlyForAuthentized])
-    def fullname(self) -> Optional[str]:
-        return self.fullname
 
 
     # @strawberry.field(

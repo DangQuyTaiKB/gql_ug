@@ -161,7 +161,7 @@ from src.DBDefinitions import (
 )
 from sqlalchemy import select
 
-async def resolve_roles_on_user(self, info: strawberry.types.Info, user_id: IDType) -> List["RoleGQLModel"]:
+async def resolve_roles_on_user(self, info: strawberry.types.Info, user_id: IDType, filter_user_id: Optional[IDType] = None) -> List["RoleGQLModel"]:
     # ve vsech skupinach, kde je user clenem najdi vsechny role a ty vrat
     from .membershipGQLModel import MembershipGQLModel
     loaderm = MembershipGQLModel.getLoader(info)
@@ -172,12 +172,14 @@ async def resolve_roles_on_user(self, info: strawberry.types.Info, user_id: IDTy
         select(RoleModel).
         where(RoleModel.group_id.in_(groupids))
     )
+    if filter_user_id is not None:
+        stmt = stmt.filter(RoleModel.user_id == filter_user_id)
+        # print("filtered to", filter_user_id, flush=True)
     loader = RoleGQLModel.getLoader(info)
     rows = await loader.execute_select(stmt)
     return rows
 
-
-async def resolve_roles_on_group(self, info: strawberry.types.Info, group_id: IDType) -> List["RoleGQLModel"]:
+async def resolve_roles_on_group(self, info: strawberry.types.Info, group_id: IDType, filter_user_id: Optional[IDType] = None) -> List["RoleGQLModel"]:
     # najdi vsechny role pro skupinu a nadrizene skupiny
     from .groupGQLModel import GroupGQLModel
     grouploader = GroupGQLModel.getLoader(info)
@@ -193,6 +195,9 @@ async def resolve_roles_on_group(self, info: strawberry.types.Info, group_id: ID
         select(RoleModel).
         where(RoleModel.group_id.in_(groupids))
     )
+    if filter_user_id is not None:
+        stmt = stmt.filter(RoleModel.user_id == filter_user_id)
+        # print("filtered to", filter_user_id, flush=True)
     roleloader = RoleGQLModel.getLoader(info)
     rows = await roleloader.execute_select(stmt)
     return rows

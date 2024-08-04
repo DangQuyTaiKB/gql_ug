@@ -53,13 +53,13 @@ class GroupTypeGQLModel(BaseGQLModel):
     lastchange = resolve_lastchange
     createdby = resolve_createdby
 
-    groups = strawberry.field(
-        description="""Groups which has this type""",
-        permission_classes=[
-            OnlyForAuthentized
-        ],
-        resolver=DBResolvers.GroupTypeModel.groups(GroupGQLModel)
-    )
+    # groups = strawberry.field(
+    #     description="""Groups which has this type""",
+    #     permission_classes=[
+    #         OnlyForAuthentized
+    #     ],
+    #     resolver=DBResolvers.GroupTypeModel.groups(GroupGQLModel)
+    # )
 
     category = strawberry.field(
         description="""Group category which this type belongs to""",

@@ -5,21 +5,35 @@ from .Base import BaseModel
 from .UUID import UUIDColumn
 from .UserModel import UserModel
 from .MembershipModel import MembershipModel
-from .GroupModel import GroupModel
-from .GroupTypeModel import GroupTypeModel
-from .GroupCategoryModel import GroupCategoryModel
-from .RoleModel import RoleModel
-from .RoleTypeModel import RoleTypeModel
-from .RoleCategoryModel import RoleCategoryModel
+from .GroupModel import (
+    GroupModel,
+    GroupTypeModel,
+    GroupCategoryModel
+    )
+from .RoleModel import (
+    RoleModel,
+    RoleTypeModel,
+    RoleCategoryModel
+)
 from .RoleTypeListModel import RoleTypeListModel
 
+from .StateTransitionModel import StateTransitionModel
+from .StateMachineModel import (
+    StateMachineModel,
+    StatemachineTypeModel,
+    StatemachineCategoryModel
+)
+from .StateModel import StateModel
 
 systemModels = [
     RoleCategoryModel,
     RoleTypeModel,
     GroupCategoryModel,
-    GroupTypeModel
+    GroupTypeModel,
+    StatemachineCategoryModel,
+    StatemachineTypeModel
 ]
+
 allModels = [
     RoleCategoryModel,
     RoleTypeModel,
@@ -32,7 +46,13 @@ allModels = [
 
     MembershipModel,
 
-    RoleTypeListModel
+    RoleTypeListModel,
+
+    StatemachineCategoryModel,
+    StatemachineTypeModel,
+    StateMachineModel,
+    StateModel,
+    StateTransitionModel
 ]
 
 from sqlalchemy import create_engine

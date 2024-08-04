@@ -155,7 +155,7 @@ class GroupCategoryResultGQLModel:
     msg: str = None
 
     @strawberry.field(description="""Result of groupcategory operation""")
-    async def group_category(self, info: strawberry.types.Info) -> Union[GroupCategoryGQLModel, None]:
+    async def category(self, info: strawberry.types.Info) -> Union[GroupCategoryGQLModel, None]:
         result = await GroupCategoryGQLModel.resolve_reference(info, self.id)
         return result
     
@@ -165,8 +165,8 @@ class GroupCategoryResultGQLModel:
         OnlyForAuthentized,
         OnlyForAdmins
     ])
-async def group_category_update(self, info: strawberry.types.Info, group_type: GroupCategoryUpdateGQLModel) -> GroupCategoryResultGQLModel:
-    return await encapsulateUpdate(info, GroupCategoryGQLModel.getLoader(info), group_type, GroupCategoryResultGQLModel(id=group_type.id, msg="ok"))
+async def group_category_update(self, info: strawberry.types.Info, group_category: GroupCategoryUpdateGQLModel) -> GroupCategoryResultGQLModel:
+    return await encapsulateUpdate(info, GroupCategoryGQLModel.getLoader(info), group_category, GroupCategoryResultGQLModel(id=group_category.id, msg="ok"))
 
 @strawberry.mutation(
     description="""Inserts a group category""",
@@ -174,8 +174,8 @@ async def group_category_update(self, info: strawberry.types.Info, group_type: G
         OnlyForAuthentized,
         OnlyForAdmins
     ])
-async def group_category_insert(self, info: strawberry.types.Info, group_type: GroupCategoryInsertGQLModel) -> GroupCategoryResultGQLModel:
-    return await encapsulateInsert(info, GroupCategoryGQLModel.getLoader(info), group_type, GroupCategoryResultGQLModel(id=None, msg="ok"))
+async def group_category_insert(self, info: strawberry.types.Info, group_category: GroupCategoryInsertGQLModel) -> GroupCategoryResultGQLModel:
+    return await encapsulateInsert(info, GroupCategoryGQLModel.getLoader(info), group_category, GroupCategoryResultGQLModel(id=None, msg="ok"))
 
 @strawberry.mutation(
     description="Deletes the group category",

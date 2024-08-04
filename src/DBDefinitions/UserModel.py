@@ -16,9 +16,9 @@ class UserModel(BaseModel):
 
     __tablename__ = "users"
 
-    id = UUIDColumn()
-    name = Column(String)
-    surname = Column(String)
+    name = Column(String, comment="name of the user")
+    middlename = Column(String, comment="name of the user")
+    surname = Column(String, comment="name of the user")
 
     @hybrid_property
     def fullname(self):
@@ -39,9 +39,3 @@ class UserModel(BaseModel):
     #     viewonly=True
     # )
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="when record has been created")
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="timestamp")
-    createdby = UUIDFKey(nullable=True, comment="who has created this record")#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True, comment="who has changed this record")#Column(ForeignKey("users.id"), index=True, nullable=True)
-
-    rbacobject = UUIDFKey(nullable=True, comment="holds object for role resolution")#Column(ForeignKey("users.id"), index=True, nullable=True)        

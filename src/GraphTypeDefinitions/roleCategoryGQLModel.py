@@ -55,7 +55,7 @@ class RoleCategoryGQLModel(BaseGQLModel):
         permission_classes=[
             OnlyForAuthentized
         ],
-        resolver=DBResolvers.RoleCategoryModel.roletypes(RoleTypeGQLModel, WhereFilterModel=RoleTypeInputWhereFilter)
+        resolver=DBResolvers.RoleCategoryModel.types(RoleTypeGQLModel, WhereFilterModel=RoleTypeInputWhereFilter)
     )
 
     RBACObjectGQLModel = Annotated["RBACObjectGQLModel", strawberry.lazy(".RBACObjectGQLModel")]

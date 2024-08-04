@@ -1,7 +1,7 @@
 import strawberry
 import uuid
 import asyncio
-from typing import List, Annotated, Optional
+from typing import List, Annotated, Optional, Union
 from .BaseGQLModel import BaseGQLModel, IDType
 from uoishelpers.resolvers import createInputs
 
@@ -65,14 +65,30 @@ class RBACObjectGQLModel:
     @strawberry.field(
         description="Roles associated with this RBAC",
         permission_classes=[OnlyForAuthentized])
-    async def roles(self, info: strawberry.types.Info) -> List["RoleGQLModel"]:
+    async def roles(
+        self, 
+        info: strawberry.types.Info,
+        user_id: Annotated[Optional[IDType], strawberry.argument(description="if defined, only roles with this user will be returned")] = None
+        ) -> List["RoleGQLModel"]:
         from .roleGQLModel import resolve_roles_on_user, resolve_roles_on_group
         result = []
         if self.asUser:
-            result = await resolve_roles_on_user(self, info, user_id=self.id)
+            result = await resolve_roles_on_user(self, info, user_id=self.id, filter_user_id=user_id)
         if self.asGroup:
-            result = await resolve_roles_on_group(self, info, group_id=self.id)
+            result = await resolve_roles_on_group(self, info, group_id=self.id, filter_user_id=user_id)
         return result
+    
+    # @strawberry.field(
+    #     description="Roles associated with this RBAC",
+    #     permission_classes=[OnlyForAuthentized])
+    # async def object(
+    #     self, 
+    #     info: strawberry.types.Info) -> Optional[Union["UserGQLModel", "GroupGQLModel"]]:
+    #     if self.asGroup:
+    #         return await GroupGQLModel.resolve_reference(info=info, id=self.id)
+    #     if self.asUser:
+    #         return await UserGQLModel.resolve_reference(info=info, id=self.id)
+    #     return None
     
 @strawberry.field(
     description="""Finds a rbacobject by its id""",

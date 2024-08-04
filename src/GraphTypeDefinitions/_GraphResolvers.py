@@ -6,6 +6,7 @@ from .BaseGQLModel import IDType
 
 UserGQLModel = typing.Annotated["UserGQLModel", strawberry.lazy(".userGQLModel")]
 GroupGQLModel = typing.Annotated["GroupGQLModel", strawberry.lazy(".groupGQLModel")]
+RBACObjectGQLModel = typing.Annotated["RBACObjectGQLModel", strawberry.lazy(".RBACObjectGQLModel")]
 from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 from ..Dataloaders import getUserFromInfo
 
@@ -55,11 +56,11 @@ async def resolve_createdby(self, info: strawberry.types.Info) -> typing.Optiona
 async def resolve_changedby(self, info: strawberry.types.Info) -> typing.Optional["UserGQLModel"]:
     return await resolve_user(info, self.changedby)
 
-# @strawberry.field(description="""Who made last change""")
-# async def resolve_rbacobject(self) -> typing.Optional[RBACObjectGQLModel]:
-#     from ._RBACObjectGQLModel import RBACObjectGQLModel
-#     result = None if self.rbacobject is None else await RBACObjectGQLModel.resolve_reference(self.rbacobject_id)
-#     return result
+@strawberry.field(description="""Role based access control object""")
+async def resolve_rbacobject(self) -> typing.Optional[RBACObjectGQLModel]:
+    from .RBACObjectGQLModel import RBACObjectGQLModel
+    result = None if self.rbacobject is None else await RBACObjectGQLModel.resolve_reference(self.rbacobject_id)
+    return result
 
 
 async def encapsulateUpdate(info, loader, entity, result):

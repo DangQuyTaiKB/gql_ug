@@ -11,8 +11,8 @@ from ._GraphPermissions import (
     RoleBasedPermission, 
     OnlyForAuthentized,
     OnlyForAdmins,
-    InsertRBACPermission,
-    AlwaysFailPermission
+    # InsertRBACPermission,
+    # AlwaysFailPermission
     )
 from ._GraphResolvers import (
     resolve_id,
@@ -49,6 +49,7 @@ from dataclasses import dataclass
 @createInputs
 @dataclass
 class GroupInputWhereFilter:
+    id: IDType
     name: str
     name_en: str
     valid: bool
@@ -56,6 +57,7 @@ class GroupInputWhereFilter:
     enddate: datetime.datetime
     grouptype: GroupTypeInputWhereFilter
     roles: RoleInputWhereFilter
+    mastergroup_id: IDType
 
 GroupGQLModel_description = """
 ## Description
@@ -388,6 +390,11 @@ class InsertGroupPermission(RBACPermission):
         if result is None:
             user = getUserFromInfo(info)
             logging.info(f"user {user} has no right to insert new group {group}")
+            print(f"user {user} has no right to insert new group {group}")
+        # else:
+        #     user = getUserFromInfo(info)
+        #     print(f"user {user} has full right to insert new group {group}")
+        #     pass
         return result
 
 @strawberry.mutation(

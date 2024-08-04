@@ -4,21 +4,21 @@ import strawberry
 import uuid
 import datetime
 
-from contextlib import asynccontextmanager
+# from contextlib import asynccontextmanager
 
 
-@asynccontextmanager
-async def withInfo(info):
-    asyncSessionMaker = info.context["asyncSessionMaker"]
-    async with asyncSessionMaker() as session:
-        try:
-            yield session
-        finally:
-            pass
+# @asynccontextmanager
+# async def withInfo(info):
+#     asyncSessionMaker = info.context["asyncSessionMaker"]
+#     async with asyncSessionMaker() as session:
+#         try:
+#             yield session
+#         finally:
+#             pass
 
 
-def getLoader(info):
-    return info.context["all"]
+# def getLoader(info):
+#     return info.context["all"]
 
 
 import datetime

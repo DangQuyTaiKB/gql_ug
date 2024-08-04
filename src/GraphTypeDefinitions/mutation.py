@@ -83,6 +83,23 @@ class Mutation:
     role_type_list_add_role = role_type_list_add
     role_type_list_remove_role = role_type_list_remove
 
+
+    from .stateGQLModel import (
+        state_insert,
+        state_update,
+        state_delete,
+
+        statemachine_insert,
+        statemachine_update,
+        statemachine_delete,
+
+        statetransition_insert,
+        statetransition_update,
+        statetransition_delete
+    )
+
+    # state_insert = state_insert
+    # state_update = state_update
     # @strawberry.mutation()
     # async def createUniversity(self, info: strawberry.types.Info, name: typing.Optional[str] = "Uni") -> str:
     #     asyncMaker = info.context["asyncSessionMaker"]

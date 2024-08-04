@@ -42,21 +42,42 @@ class RoleTypeGQLModel(BaseGQLModel):
     def getLoader(cls, info):
         return getLoader(info).RoleTypeModel
 
-    id = resolve_id
-    name = resolve_name
-    name_en = resolve_name_en
+    # id = resolve_id
+    # name = resolve_name
+    # name_en = resolve_name_en
+
+    # query for id, name and name_en can be unauthorized
+    @strawberry.field(description="""Entity primary key""")
+    def id(self) -> IDType:
+        return self.id
+
+    @strawberry.field(
+        description="""Name """,
+        # permission_classes=[OnlyForAuthentized]
+        )
+    def name(self) -> str:
+        return self.name
+
+    @strawberry.field(
+        description="""English name""",
+        # permission_classes=[OnlyForAuthentized]
+        )
+    def name_en(self) -> str:
+        result = self.name_en if self.name_en else ""
+        return result
+
     changedby = resolve_changedby
     created = resolve_created
     lastchange = resolve_lastchange
     createdby = resolve_createdby
 
-    roles = strawberry.field(
-        description="""List of roles with this type""",
-        permission_classes=[
-            OnlyForAuthentized
-        ],
-        resolver=DBResolvers.RoleTypeModel.roles(RoleGQLModel, WhereFilterModel=RoleInputWhereFilter)
-    )
+    # roles = strawberry.field(
+    #     description="""List of roles with this type""",
+    #     permission_classes=[
+    #         OnlyForAuthentized
+    #     ],
+    #     resolver=DBResolvers.RoleTypeModel.roles(RoleGQLModel, WhereFilterModel=RoleInputWhereFilter)
+    # )
 
     category = strawberry.field(
         description="""Get role category of this role type""",
@@ -101,7 +122,7 @@ role_type_by_id = strawberry.field(
 role_type_page = strawberry.field(
     description="""Finds all role types paged""",
     permission_classes=[
-        OnlyForAuthentized
+        # OnlyForAuthentized
     ],
     resolver=DBResolvers.RoleTypeModel.resolve_page(RoleTypeGQLModel, WhereFilterModel=RoleTypeInputWhereFilter)
 )
