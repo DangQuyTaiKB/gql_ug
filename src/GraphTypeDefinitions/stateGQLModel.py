@@ -60,7 +60,7 @@ class StateMachineGQLModel(BaseGQLModel):
         loader = StateGQLModel.getLoader(info)
         results = await loader.filter_by(statemachine_id=self.id)
         return results
-    
+           
     @strawberry.field(
         description="""All states associated with this state machine""",
         permission_classes=[OnlyForAuthentized])
@@ -102,7 +102,14 @@ class StateGQLModel(BaseGQLModel):
         return result
 
     @strawberry.field(
-        description="""Sources""",
+        description="""position in list of states""",
+        permission_classes=[OnlyForAuthentized])
+    async def order(self, info: strawberry.types.Info) -> typing.Optional[int]:
+        result = self.order 
+        return result
+
+    @strawberry.field(
+        description="""Transitions linked into thist state""",
         permission_classes=[OnlyForAuthentized])
     async def sources(self, info: strawberry.types.Info) -> typing.List["StateTransitionGQLModel"]:
         loader = StateTransitionGQLModel.getLoader(info)
@@ -110,7 +117,7 @@ class StateGQLModel(BaseGQLModel):
         return results
     
     @strawberry.field(
-        description="""Targets""",
+        description="""Transitions going out of this state""",
         permission_classes=[OnlyForAuthentized])
     async def targets(self, info: strawberry.types.Info) -> typing.List["StateTransitionGQLModel"]:
         loader = StateTransitionGQLModel.getLoader(info)
@@ -149,13 +156,13 @@ class StateGQLModel(BaseGQLModel):
         permission_classes=[OnlyForAuthentized])
     async def roletypes(self, info: strawberry.types.Info, access: typing.Optional[StateDataAccessType] = StateDataAccessType.READ) -> typing.List["RoleTypeGQLModel"]:
         from .roleListGQLModel import RoleTypeListGQLModel
-        from .roleGQLModel import RoleGQLModel
+        from .roleTypeGQLModel import RoleTypeGQLModel
         loader = RoleTypeListGQLModel.getLoader(info)
         if access == StateDataAccessType.READ:
             results = await loader.filter_by(list_id=self.readerslist_id)
         else:
             results = await loader.filter_by(list_id=self.writerslist_id)
-        awaitables = (RoleGQLModel.resolve_reference(info, id=r.roletype_id) for r in results)
+        awaitables = (RoleTypeGQLModel.resolve_reference(info, id=r.type_id) for r in results)
         return await asyncio.gather(*awaitables)
 
 @strawberry.federation.type(
@@ -214,7 +221,7 @@ class StateMachineWhereFilter:
     name_en: str
     id: uuid.UUID
     created: datetime.datetime
-
+    type_id: uuid.UUID
 
 @createInputs
 @dataclass
@@ -223,6 +230,7 @@ class StateWhereFilter:
     name_en: str
     id: uuid.UUID
     created: datetime.datetime
+    statemachine_id: uuid.UUID
 
 @createInputs
 @dataclass
@@ -231,6 +239,9 @@ class StateTransitionWhereFilter:
     name_en: str
     id: uuid.UUID
     created: datetime.datetime
+    source_id: uuid.UUID
+    target_id: uuid.UUID
+    statemachine_id: uuid.UUID
 
 from src.DBResolvers import (
     StateResolvers,
@@ -339,6 +350,7 @@ class StateInsertGQLModel:
     name: str = strawberry.field(description="name")   
     statemachine_id: uuid.UUID = strawberry.field(description="id of machine whichs state belongs to")
     name_en: typing.Optional[str] = strawberry.field(description="eng. name", default=None)   
+    order: typing.Optional[int] = strawberry.field(description="order of states", default=None)
     id: typing.Optional[uuid.UUID] = strawberry.field(description="primary key (UUID), could be client generated", default=None)
     createdby: strawberry.Private[uuid.UUID] = None 
 
@@ -348,6 +360,7 @@ class StateUpdateGQLModel:
     id: uuid.UUID = strawberry.field(description="primary key (UUID), identifies object of operation")
     name: typing.Optional[str] = strawberry.field(description="name", default=None)   
     name_en: typing.Optional[str] = strawberry.field(description="eng. name", default=None)   
+    order: typing.Optional[int] = strawberry.field(description="order of states", default=None)
     changedby: strawberry.Private[uuid.UUID] = None
 
 @strawberry.type(description="Result of CU operations")

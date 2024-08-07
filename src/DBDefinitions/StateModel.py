@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy.schema import Column
-from sqlalchemy import Uuid, String, DateTime, ForeignKey
+from sqlalchemy import Uuid, String, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .UUID import uuid, UUIDFKey, UUIDColumn
@@ -11,6 +11,7 @@ class StateModel(BaseModel):
 
     name = Column(String, comment="name of type")
     name_en = Column(String, comment="english name of type")
+    order = Column(Integer, comment="determines order of states", server_default="0")
 
     statemachine = relationship("StateMachineModel", back_populates="states")
     statemachine_id = Column(ForeignKey("statemachines.id"), index=True, nullable=False)

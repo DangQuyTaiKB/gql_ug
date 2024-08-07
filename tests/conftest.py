@@ -393,8 +393,11 @@ def runOauth(port):
     
     _api_process = Process(target=runOAuthServer, daemon=True, kwargs={"port": port})
     _api_process.start()
+    sleep(2)
     print(f"OAuthServer started at {port}")
     logging.info(f"OAuthServer started at {port}")
+    
+
     yield _api_process
     _api_process.terminate()
     _api_process.join()
@@ -417,6 +420,7 @@ def runUserInfoServer(port, user):
         return user
     uvicorn.run(app, port=port)
 
+from time import sleep
 def runUserInfo(port, user):
     from multiprocessing import Process
     
