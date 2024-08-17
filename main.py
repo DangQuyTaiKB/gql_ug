@@ -72,7 +72,7 @@ async def RunOnceAndReturnSessionMaker():
     Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
     """
 
-    makeDrop = os.getenv("DEMO", None) == "True"
+    makeDrop = os.getenv("DEMODATA", None) == "True"
     logging.info(f'starting engine for "{connectionString} makeDrop={makeDrop}"')
 
     result = await startEngine(
