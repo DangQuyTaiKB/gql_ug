@@ -68,6 +68,18 @@ class UserGQLModel(BaseGQLModel):
         resolver=DBResolvers.UserModel.surname
     )  
 
+    @strawberry.field(
+        description="""if this record is related to logged user""",
+        permission_classes=[
+            OnlyForAuthentized
+        ])
+    async def is_this_me(self, info: strawberry.types.Info) -> bool:
+        user = getUserFromInfo(info)
+        # print(f"me: {user}")
+        if user is None: return None
+        user_id = user.get("id", None)
+        return f"{self.id}" == f"{user_id}"
+        
     # fullname = strawberry.field(
     #     description="""User's name (like John Newbie)""",
     #     permission_classes=[
@@ -211,6 +223,7 @@ async def me(self,
     info: strawberry.types.Info) -> Optional[UserGQLModel]:
     result = None
     user = getUserFromInfo(info)
+    print(f"me: {user}")
     if user is None: return None
     user_id = user.get("id", None)
     if user_id is None: return None
