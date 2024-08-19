@@ -525,7 +525,7 @@ def RoleBasedPermission(roles: str = ""):
             roleIndex = { role["name_en"]: role["id"] for role in allroles }
             roleNames = roles.split(";")
             roleNames = list(map(lambda item: item.strip(), roleNames))
-            roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
+            roleIdsNeeded = list(map(lambda roleName: roleIndex.get(roleName, None), roleNames))
         return roleIdsNeeded
 
     class RolebasedPermission(RBACPermission):
@@ -540,13 +540,14 @@ def RoleBasedPermission(roles: str = ""):
             # self, source, **kwargs
         ) -> bool:
             roleIdsNeeded = await updateRoleIdsNeeded(info=info)
-
+            rbacobject = getattr(source, "id", None)
+            assert rbacobject is not None, f"source rbacobject returned None {source}"
             self.defaultResult = [] if info._field.type.__class__ == StrawberryList else None
             # return False
             logging.info(f"has_permission {kwargs}")
             # assert False
-            activeRoles = await self.getActiveRoles(source, info)
-            s = [r for r in activeRoles if (r["roletype"]["id"] in roleIdsNeeded)]           
+            activeRoles = await self.getActiveRoles(rbacobject=rbacobject, info=info)
+            s = [r for r in activeRoles if (r["type"]["id"] in roleIdsNeeded)]           
             isAllowed = len(s) > 0
             return isAllowed
         

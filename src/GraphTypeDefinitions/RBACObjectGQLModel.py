@@ -20,14 +20,14 @@ class RBACObjectGQLModel:
     asGroup: strawberry.Private[bool] = False
     
     @classmethod
-    async def resolve_roles(info: strawberry.types.Info, id: IDType):
+    async def resolve_roles(cls, info: strawberry.types.Info, id: IDType):
         from .roleGQLModel import resolve_roles_on_user, resolve_roles_on_group
         from ._GraphPermissions import RBACPermission
         awaitableresult0 = resolve_roles_on_user(None, info, user_id=id)
         awaitableresult1 = resolve_roles_on_group(None, info, group_id=id)
         result0, result1 = await asyncio.gather(awaitableresult0, awaitableresult1)
         roles = [*result0, *result1]
-        allRoleTypes = RBACPermission.getAllRoles()
+        allRoleTypes = await RBACPermission.getAllRoles(info=info)
         index = {roleType["id"]: roleType for roleType in allRoleTypes}
         extresult = [
             {
