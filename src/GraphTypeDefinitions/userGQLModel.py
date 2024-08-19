@@ -78,8 +78,33 @@ class UserGQLModel(BaseGQLModel):
         # print(f"me: {user}")
         if user is None: return None
         user_id = user.get("id", None)
-        return f"{self.id}" == f"{user_id}"
+        print(f"is_this_me {type(user_id)}, {type(self.id)}", flush=True)
+        print(f"is_this_me {user_id==self.id}", flush=True)
+        # return f"{self.id}" == f"{user_id}"
+        return user_id==self.id
         
+
+    @strawberry.field(
+        description="""active roles to this user""",
+        permission_classes=[
+            OnlyForAuthentized
+        ])
+    async def roles_on(self, info: strawberry.types.Info) -> List["RoleGQLModel"]:
+        from .roleGQLModel import resolve_roles_on_user
+        user = getUserFromInfo(info)
+        user_id = user.get("id", None)
+        return await resolve_roles_on_user(self, info=info, user_id=user_id)
+        
+    @strawberry.field(
+        description="""active roles to this user""",
+        permission_classes=[
+            OnlyForAuthentized,
+            RoleBasedPermission("zpracovatel gdpr")
+        ])
+    async def gdpr(self, info: strawberry.types.Info) -> Optional[str]:
+        return "gdpr information"
+
+
     # fullname = strawberry.field(
     #     description="""User's name (like John Newbie)""",
     #     permission_classes=[
