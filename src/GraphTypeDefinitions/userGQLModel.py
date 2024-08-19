@@ -2,6 +2,7 @@ import datetime
 import strawberry
 import asyncio
 import uuid
+import typing
 from typing import List, Optional, Union, Annotated
 from uoishelpers.resolvers import createInputs
 
@@ -96,14 +97,16 @@ class UserGQLModel(BaseGQLModel):
         return await resolve_roles_on_user(self, info=info, user_id=user_id)
         
     @strawberry.field(
-        description="""active roles to this user""",
+        description="""gdpr check""",
         permission_classes=[
             OnlyForAuthentized,
             RoleBasedPermission("zpracovatel gdpr")
         ])
-    async def gdpr(self, info: strawberry.types.Info) -> Optional[str]:
-        return "gdpr information"
-
+    async def gdpr(self, info: strawberry.types.Info, force: typing.Optional[bool] = False) -> typing.Optional[str]:
+        if force:
+            return "gdpr information"
+        else:
+            return None
 
     # fullname = strawberry.field(
     #     description="""User's name (like John Newbie)""",
