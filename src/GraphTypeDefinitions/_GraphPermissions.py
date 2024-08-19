@@ -539,13 +539,13 @@ def RoleBasedPermission(roles: str = ""):
             # self, source, info: strawberry.types.Info, **kwargs
             # self, source, **kwargs
         ) -> bool:
-            roleIdsNeeded = updateRoleIdsNeeded(info=info)
+            roleIdsNeeded = await updateRoleIdsNeeded(info=info)
 
             self.defaultResult = [] if info._field.type.__class__ == StrawberryList else None
             # return False
             logging.info(f"has_permission {kwargs}")
             # assert False
-            activeRoles = self.getActiveRoles(source, info)
+            activeRoles = await self.getActiveRoles(source, info)
             s = [r for r in activeRoles if (r["roletype"]["id"] in roleIdsNeeded)]           
             isAllowed = len(s) > 0
             return isAllowed
