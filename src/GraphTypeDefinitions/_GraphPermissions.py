@@ -513,16 +513,15 @@ class OnlyForAdmins(RBACPermission):
 #         isAllowed = len(activeRoles) > 0
 #         return isAllowed
     
-
-
 @cache
 def RoleBasedPermission(roles: str = ""):
     roleIdsNeeded = None
+        
     async def updateRoleIdsNeeded(info: strawberry.types.Info):
         nonlocal roleIdsNeeded
         if roleIdsNeeded is None:
             allroles = await RBACPermission.getAllRoles(info=info)
-            roleIndex = { role["name_en"]: role["id"] for role in allroles }
+            roleIndex = {role["name"]: role["id"] for role in allroles}
             roleNames = roles.split(";")
             roleNames = list(map(lambda item: item.strip(), roleNames))
             roleIdsNeeded = list(map(lambda roleName: roleIndex.get(roleName, None), roleNames))
