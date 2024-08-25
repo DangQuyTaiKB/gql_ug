@@ -935,8 +935,8 @@ def get_demodata():
 
 async def initDB(asyncSessionMaker):
 
-    demo = os.environ.get("DEMODATA", None) == "True"
-    if demo:
+    DEMODATA = os.environ.get("DEMODATA", None) in ["True", "true"]        
+    if DEMODATA:
         dbModels = allModels
     else:
         dbModels = systemModels
