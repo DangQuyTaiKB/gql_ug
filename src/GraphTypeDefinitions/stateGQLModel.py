@@ -151,19 +151,53 @@ class StateGQLModel(BaseGQLModel):
     #     awaitables = (RoleGQLModel.resolve_reference(info, id=r.roletype_id) for r in results)
     #     return await asyncio.gather(*awaitables)
 
+
+    @classmethod
+    async def resolve_roletypes(cls, state, info: strawberry.types.Info, access: typing.Optional[StateDataAccessType] = StateDataAccessType.READ) -> typing.List["RoleTypeGQLModel"]:
+        from .roleListGQLModel import RoleTypeListGQLModel
+        loader = RoleTypeListGQLModel.getLoader(info)
+        if access == StateDataAccessType.READ:
+            results = await loader.filter_by(list_id=state.readerslist_id)
+        else:
+            results = await loader.filter_by(list_id=state.writerslist_id)
+        return results
+
     @strawberry.field(
         description="""All roletypes associated with this state, all roles will be enabled for update""",
         permission_classes=[OnlyForAuthentized])
     async def roletypes(self, info: strawberry.types.Info, access: typing.Optional[StateDataAccessType] = StateDataAccessType.READ) -> typing.List["RoleTypeGQLModel"]:
-        from .roleListGQLModel import RoleTypeListGQLModel
+        # from .roleListGQLModel import RoleTypeListGQLModel
         from .roleTypeGQLModel import RoleTypeGQLModel
-        loader = RoleTypeListGQLModel.getLoader(info)
-        if access == StateDataAccessType.READ:
-            results = await loader.filter_by(list_id=self.readerslist_id)
-        else:
-            results = await loader.filter_by(list_id=self.writerslist_id)
+        # loader = RoleTypeListGQLModel.getLoader(info)
+        # if access == StateDataAccessType.READ:
+        #     results = await loader.filter_by(list_id=self.readerslist_id)
+        # else:
+        #     results = await loader.filter_by(list_id=self.writerslist_id)
+        # awaitables = (RoleTypeGQLModel.resolve_reference(info, id=r.type_id) for r in results)
+        # return await asyncio.gather(*awaitables)
+        results = await StateGQLModel.resolve_roletypes(state=self, info=info, access=access)
         awaitables = (RoleTypeGQLModel.resolve_reference(info, id=r.type_id) for r in results)
         return await asyncio.gather(*awaitables)
+
+
+    @strawberry.field(
+        description="""If logged user is authorized to operation on rbacobject_id""",
+        permission_classes=[OnlyForAuthentized])
+    async def user_can(self, info: strawberry.types.Info, access: StateDataAccessType, rbacobject_id: uuid.UUID, user_id: typing.Optional[uuid.UUID] = None ) -> typing.Optional[bool]:
+        from .RBACObjectGQLModel import RBACObjectGQLModel
+        # user = getUserFromInfo(info=info)
+        _user_id = getUserFromInfo(info=info)["id"] if user_id is None else user_id
+        roletypes = await StateGQLModel.resolve_roletypes(state=self, info=info, access=access)
+        roletypes_ids = set(roletype.type_id for roletype in roletypes)
+        print(f"roletypes_ids {roletypes_ids}", flush=True)
+        _rbacobject_id = uuid.UUID(rbacobject_id) if type(rbacobject_id) == str else rbacobject_id
+        rbacroles = await RBACObjectGQLModel.resolve_roles(info=info, id=_rbacobject_id)
+        rbacroletype_ids = set(rbacrole["roletype_id"] for rbacrole in rbacroles if rbacrole["user_id"] == _user_id)
+        print(f"rbacroletype_ids {rbacroletype_ids}", flush=True)
+        intersection = roletypes_ids.intersection(rbacroletype_ids)
+        print(f"intersection {intersection}", flush=True)
+        return len(intersection) > 0
+        
 
 @strawberry.federation.type(
     keys=["id"], description="""Entity representing an entity type"""

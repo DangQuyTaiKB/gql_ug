@@ -7,7 +7,7 @@ from functools import cached_property
 
 import os
 
-isDEMO = os.environ.get("DEMO", "True")
+isDEMO = os.getenv("DEMO", None) in ["True", "true"]
 
 # def AsyncSessionFromInfo(info):
 #     return info.context["session"]
@@ -304,7 +304,7 @@ class OnlyForAuthentized(strawberry.permission.BasePermission):
     @cached_property
     def isDEMO(self):
         DEMO = os.getenv("DEMO", None)
-        return DEMO == "True"
+        return DEMO in ["True", "true"]
 
 # def createRoleGetter():
 #     allroles = []

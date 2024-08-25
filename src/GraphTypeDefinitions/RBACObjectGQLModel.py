@@ -2,12 +2,15 @@ import strawberry
 import uuid
 import asyncio
 from typing import List, Annotated, Optional, Union
+
+import strawberry.types
 from .BaseGQLModel import BaseGQLModel, IDType
 from uoishelpers.resolvers import createInputs
 
 from ._GraphResolvers import resolve_id
 from ._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
-from src.Dataloaders import getLoadersFromInfo as getLoader
+from src.Dataloaders import getLoadersFromInfo as getLoader, getUserFromInfo
+from .stateGQLModel import StateDataAccessType, StateGQLModel
 
 RoleGQLModel = Annotated["RoleGQLModel", strawberry.lazy(".roleGQLModel")]
 
@@ -78,6 +81,71 @@ class RBACObjectGQLModel:
             result = await resolve_roles_on_group(self, info, group_id=self.id, filter_user_id=user_id)
         return result
     
+
+    @strawberry.field(
+        description="""If logged user is authorized to operation on rbacobject_id""",
+        permission_classes=[OnlyForAuthentized])
+    async def user_can_with_state(self, 
+            info: strawberry.types.Info, 
+            access: StateDataAccessType, 
+            state_id: Optional[uuid.UUID] = None, 
+            user_id: Optional[uuid.UUID] = None) -> Optional[bool]:
+        # user = getUserFromInfo(info=info)
+        _user_id = getUserFromInfo(info=info)["id"] if user_id is None else user_id
+
+        _rbacobject_id = self.id # uuid.UUID(rbacobject_id) if type(rbacobject_id) == str else rbacobject_id
+        rbacroles = await RBACObjectGQLModel.resolve_roles(info=info, id=_rbacobject_id)
+        rbacroletype_ids = set(rbacrole["roletype_id"] for rbacrole in rbacroles if rbacrole["user_id"] == _user_id)
+        print(f"rbacroletype_ids {rbacroletype_ids}", flush=True)
+
+        loader = StateGQLModel.getLoader(info=info)
+        state = await loader.load(id=state_id)
+
+        roletypes = await StateGQLModel.resolve_roletypes(state=state, info=info, access=access)
+        roletypes_ids = set(roletype.type_id for roletype in roletypes)
+        print(f"roletypes_ids {roletypes_ids}", flush=True)
+        intersection = roletypes_ids.intersection(rbacroletype_ids)
+        print(f"intersection {intersection}", flush=True)
+        return len(intersection) > 0
+
+    @strawberry.field(
+        description="""If logged user is authorized to operation on rbacobject_id""",
+        permission_classes=[OnlyForAuthentized])
+    async def user_can_without_state(self, 
+            info: strawberry.types.Info, 
+            roles_needed: List[str] = strawberry.argument(description="role type names needed to have access"),
+            # strawberry.types.StrawberryArgument(description="roles needed to have access", ),           
+            user_id: Optional[uuid.UUID] = None) -> Optional[bool]:
+        
+        from .roleTypeGQLModel import RoleTypeGQLModel
+        loader = RoleTypeGQLModel.getLoader(info=info)
+
+        _user_id = getUserFromInfo(info=info)["id"] if user_id is None else user_id
+
+        from .roleGQLModel import resolve_roles_on_user, resolve_roles_on_group
+        rbac_roles = []
+        if self.asUser:
+            rbac_roles = await resolve_roles_on_user(self, info, user_id=self.id, filter_user_id=_user_id)
+        if self.asGroup:
+            rbac_roles = await resolve_roles_on_group(self, info, group_id=self.id, filter_user_id=_user_id)        
+
+        # 👇 ids of role types associated with this rbac and available for the user
+        rbac_role_type_ids = (role.roletype_id for role in rbac_roles)
+
+        # 👇 prepare load of role types associated with this rbac
+        role_types = (loader.load(role_type_id) for role_type_id in rbac_role_type_ids)
+        
+        # 👇 wait for load ...
+        role_types = await asyncio.gather(*role_types)
+
+        # 👇 filter loaded to needed ...
+        role_types_need = (role_type.name for role_type in role_types if (role_type.name in roles_needed))
+
+        # 👇 is there any role ?
+        first_role = next(role_types_need, None)
+        return first_role is not None
+
+
     # @strawberry.field(
     #     description="Roles associated with this RBAC",
     #     permission_classes=[OnlyForAuthentized])

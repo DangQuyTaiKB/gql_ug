@@ -72,7 +72,7 @@ async def RunOnceAndReturnSessionMaker():
     Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
     """
 
-    makeDrop = os.getenv("DEMODATA", None) == "True"
+    makeDrop = os.getenv("DEMODATA", None) in ["True", "true"]
     logging.info(f'starting engine for "{connectionString} makeDrop={makeDrop}"')
 
     result = await startEngine(
@@ -165,7 +165,7 @@ async def apollo_gql(request: Request, item: Item):
     DEMOE = os.getenv("DEMO", None)
 
     sentinelResult = await sentinel(request, item)
-    if DEMOE == "False":
+    if DEMOE in ["False", "false"]:
         if sentinelResult:
             logging.info(f"sentinel test failed for query={item} \n request={request}")
             print(f"sentinel test failed for query={item} \n request={request}")
@@ -219,9 +219,9 @@ def envAssertDefined(name, default=None):
 DEMO = envAssertDefined("DEMO", None)
 JWTPUBLICKEYURL = envAssertDefined("JWTPUBLICKEYURL", None)
 JWTRESOLVEUSERPATHURL = envAssertDefined("JWTRESOLVEUSERPATHURL", None)
-
-assert (DEMO == "True") or (DEMO == "False"), "DEMO environment variable can have only `True` or `False` values"
-DEMO = DEMO == "True"
+print(f"DEMO = {DEMO} is type {type(DEMO)}")
+assert (DEMO in ["True", "true", "False", "false"]), "DEMO environment variable can have only `True` or `False` values"
+DEMO = DEMO in ["True", "true"]
 
 if DEMO:
     print("####################################################")
