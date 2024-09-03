@@ -104,6 +104,21 @@ async def startEngine(connectionstring=None, makeDrop=False, makeUp=True) -> Asy
 import os
 
 
+# def ComposeConnectionString():
+#     """Odvozuje connectionString z promennych prostredi (nebo z Docker Envs, coz je fakticky totez).
+#     Lze predelat na napr. konfiguracni file.
+#     """
+#     user = os.environ.get("POSTGRES_USER", "postgres")
+#     password = os.environ.get("POSTGRES_PASSWORD", "example")
+#     database = os.environ.get("POSTGRES_DB", "data")
+#     hostWithPort = os.environ.get("POSTGRES_HOST", "localhost:5432")
+
+#     driver = "postgresql+asyncpg"  # "postgresql+psycopg2"
+#     connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}"
+#     connectionstring = os.environ.get("CONNECTION_STRING", connectionstring)
+
+#     return connectionstring
+
 def ComposeConnectionString():
     """Odvozuje connectionString z promennych prostredi (nebo z Docker Envs, coz je fakticky totez).
     Lze predelat na napr. konfiguracni file.
@@ -112,9 +127,14 @@ def ComposeConnectionString():
     password = os.environ.get("POSTGRES_PASSWORD", "example")
     database = os.environ.get("POSTGRES_DB", "data")
     hostWithPort = os.environ.get("POSTGRES_HOST", "localhost:5432")
-
-    driver = "postgresql+asyncpg"  # "postgresql+psycopg2"
-    connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}"
-    connectionstring = os.environ.get("CONNECTION_STRING", connectionstring)
-
+    isCockroach = os.environ.get("IS_COCKROACH", "False")
+    
+    if isCockroach == "False":
+        driver = "postgresql+asyncpg"  # "postgresql+psycopg2"
+        connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}"
+    if isCockroach == "True":
+        driver = "cockroachdb+asyncpg"  # "postgresql+psycopg2"
+        connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}?ssl=disable"
+    print(connectionstring)
     return connectionstring
+
